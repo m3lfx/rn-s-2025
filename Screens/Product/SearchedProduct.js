@@ -18,7 +18,7 @@ const SearchedProduct = ({ productsFiltered }) => {
                         renderItem={({ item }) =>
                             <TouchableOpacity
                                 style={{ width: '50%' }}
-                                onPress={() => navigation.navigate("Product Detail", { item: item })
+                                onPress={() => navigation.navigate("Product Detail", { item})
                                 }>
                                 <Surface width="90%">
                                     <Avatar.Image size={24}
