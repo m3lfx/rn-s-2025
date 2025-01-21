@@ -4,15 +4,20 @@ import ProductContainer from './Screens/Product/ProductContainer';
 import Header from './Screens/Shared/Header';
 import { NavigationContainer } from '@react-navigation/native'
 import Main from './Navigators/Main';
-
-
+import { Provider } from 'react-redux';
+import store from './Redux/store';
+import Toast from 'react-native-toast-message';
 export default function App() {
   return (
-    <NavigationContainer>
-      <Header />
-      {/* <ProductContainer /> */}
-      <Main />
-    </NavigationContainer >
+    <Provider store={store}>
+      <NavigationContainer>
+        <Header />
+        {/* <ProductContainer /> */}
+        <Main />
+      </NavigationContainer >
+      <Toast />
+    </Provider>
+
 
   );
 }
