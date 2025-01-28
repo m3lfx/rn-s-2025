@@ -12,7 +12,7 @@ import Toast from "react-native-toast-message";
 import { Camera, CameraType } from 'expo-camera';
 import Icon from "react-native-vector-icons/FontAwesome"
 import mime from "mime";
-// import * as mime from 'react-native-mime-types';
+
 import * as ImagePicker from "expo-image-picker"
 import * as Location from 'expo-location';
 var { height, width } = Dimensions.get("window")
@@ -33,19 +33,10 @@ const Register = (props) => {
     const [errorMsg, setErrorMsg] = useState(null);
     const navigation = useNavigation()
 
-    // const addPhoto = async () => {
-    //     setLaunchCam(true)
-    //     if (camera) {
-    //         const data = await camera.takePictureAsync(null)
-    //         setImage(data.uri);
-    //         setMainImage(data.uri)
-    //         setLaunchCam(false)
-    //     }
-    // }
+   
 
     const takePhoto = async () => {
         setLaunchCam(true)
-
         const c = await ImagePicker.requestCameraPermissionsAsync();
 
         if (c.status === "granted") {
@@ -55,8 +46,6 @@ const Register = (props) => {
             });
             console.log(result)
 
-            // setImage(data.uri);
-            // setMainImage(data.uri)
             if (!result.canceled) {
                 // console.log(result.assets[0].uri)
                 setMainImage(result.assets[0].uri);
@@ -69,37 +58,7 @@ const Register = (props) => {
         if (email === "" || name === "" || phone === "" || password === "") {
             setError("Please fill in the form correctly");
         }
-        // let user = {
-        //     name: name,
-        //     email: email,
-        //     password: password,
-        //     phone: phone,
-        //     isAdmin: false,
-        //   };
-        //   axios
-        //     .post(`${baseURL}users/register`, user)
-        //     .then((res) => {
-        //       if (res.status == 200) {
-        //         Toast.show({
-        //           topOffset: 60,
-        //           type: "success",
-        //           text1: "Registration Succeeded",
-        //           text2: "Please Login into your account",
-        //         });
-        //         setTimeout(() => {
-        //           navigation.navigate("Login");
-        //         }, 500);
-        //       }
-        //     })
-        //     .catch((error) => {
-        //       Toast.show({
-        //         position: 'bottom',
-        //         bottomOffset: 20,
-        //         type: "error",
-        //         text1: "Something went wrong",
-        //         text2: "Please try again",
-        //       });
-        //     });
+      
         let formData = new FormData();
         const newImageUri = "file:///" + image.split("file:/").join("");
 
@@ -150,27 +109,44 @@ const Register = (props) => {
     const getLocation = () => {
         // ?z=15&q='restaurants
         const { coords } = location
-        const url = `geo:${coords.latitude},${coords.longtitude}?z=21`;
+        const url = `geo:${coords.latitude},${coords.longtitude}?z=5`;
         Linking.openURL(url);
     }
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const cameraStatus = await Camera.requestCameraPermissionsAsync();
-    //         setHasCameraPermission(cameraStatus.status === 'granted');
-    //     })();
-    //     (async () => {
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images', 'videos'],
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+    
+        console.log(result);
+    
+        if (!result.canceled) {
+          setImage(result.assets[0].uri);
+          setMainImage(result.assets[0].uri);
+        }
+      };
 
-    //         let { status } = await Location.requestForegroundPermissionsAsync();
-    //         if (status !== 'granted') {
-    //             setErrorMsg('Permission to access location was denied');
-    //             return;
-    //         }
+    useEffect(() => {
+        (async () => {
+            const cameraStatus = await Camera.requestCameraPermissionsAsync();
+            setHasCameraPermission(cameraStatus.status === 'granted');
+        })();
+        (async () => {
 
-    //         let location = await Location.getCurrentPositionAsync({});
-    //         setLocation(location);
-    //     })();
-    // }, []);
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+        })();
+    }, []);
     console.log(location)
     return (
         <KeyboardAwareScrollView
@@ -179,38 +155,12 @@ const Register = (props) => {
             enableOnAndroid={true}
         >
             <FormContainer title={"Register"}>
-                {/* {launchCam ?
-                    <View width={width} >
-                        <View style={styles.cameraContainer}>
-                            <Camera
-                                ref={ref => setCamera(ref)}
-                                style={styles.fixedRatio}
-                                type={type}
-                                ratio={'1:1'} />
-
-                        </View>
-                        <Button
-                            title="Add Photo"
-
-                            onPress={() => takePhoto()} />
-
-                        <Button
-                            title="flip camera"
-                            onPress={() => {
-                                setType(
-                                    type === Camera.Constants.Type.back
-                                        ? Camera.Constants.Type.front
-                                        : Camera.Constants.Type.back
-                                );
-                            }} />
-
-
-                    </View> : null} */}
-
+              
                 <View style={styles.imageContainer}>
                     <Image style={styles.image} source={{ uri: mainImage }} />
                     <TouchableOpacity
                         onPress={takePhoto}
+                        // onPress={pickImage}
                         style={styles.imagePicker}>
                         <Icon style={{ color: "white" }} name="camera" />
                     </TouchableOpacity>
@@ -250,8 +200,6 @@ const Register = (props) => {
                         onPress={() => register()}
                         style={{ color: "blue" }}
                     />
-
-
                 </View>
                 <View>
                     <Button
