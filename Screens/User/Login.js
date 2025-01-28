@@ -1,5 +1,5 @@
 import Input from "../Shared/Input";
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, Button } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -10,10 +10,11 @@ import { loginUser } from '../../Context/Actions/Auth.actions'
 
 
 const Login = (props) => {
+    const context = useContext(AuthGlobal)
     const navigation = useNavigation()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
+    const [error, setError] = useState("")
     const handleSubmit = () => {
         const user = {
             email,
@@ -27,6 +28,13 @@ const Login = (props) => {
             // console.log("error")
         }
     };
+
+    useEffect(() => {
+        if (context.stateUser.isAuthenticated === true) {
+            navigation.navigate("User Profile")
+        }
+    }, [context.stateUser.isAuthenticated])
+    
     AsyncStorage.getAllKeys((err, keys) => {
         AsyncStorage.multiGet(keys, (error, stores) => {
             stores.map((result, i, store) => {
