@@ -9,7 +9,7 @@ function MyStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen
-                name='Home'
+                name='Main'
                 component={ProductContainer}
                 options={{
                     headerShown: false,
