@@ -69,7 +69,7 @@ const ListItem = ({ item, index, deleteProduct }) => {
                             medium
                             danger
                             onPress={() => [
-                                deleteProduct(item._id),
+                                deleteProduct(item.id),
                                  setModalVisible(false)]}
                             title="delete"
                         >
