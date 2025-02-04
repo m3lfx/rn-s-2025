@@ -8,10 +8,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native';
-
+import { Picker } from '@react-native-picker/picker'
 import { Dropdown } from 'react-native-paper-dropdown';
 const countries = require("../../../assets/data/countries.json");
-
+import AuthGlobal from '../../../Context/Store/AuthGlobal'
+import Toast from 'react-native-toast-message'
 const Checkout = (props) => {
     const [user, setUser] = useState('')
     const [orderItems, setOrderItems] = useState([])
@@ -24,9 +25,20 @@ const Checkout = (props) => {
 
     const navigation = useNavigation()
     const cartItems = useSelector(state => state.cartItems)
-
+    const context = useContext(AuthGlobal);
     useEffect(() => {
         setOrderItems(cartItems)
+        if(context.stateUser.isAuthenticated) {
+            setUser(context.stateUser.user.userId)
+        } else {
+            navigation.navigate("User",{ screen: 'Login' });
+            Toast.show({
+                topOffset: 60,
+                type: "error",
+                text1: "Please Login to Checkout",
+                text2: ""
+            });
+        }
 
         return () => {
             setOrderItems();
@@ -90,18 +102,26 @@ const Checkout = (props) => {
                     keyboardType={"numeric"}
                     onChangeText={(text) => setZip(text)}
                 />
-                <Dropdown
-                    label="countries"
-                    placeholder="Select Country"
-                    options={countries}
-                    value={country}
-                    onSelect={setCountry}
-                    width="80%"
-                    
-                    placeholderStyle={{ color: '#007aff' }}
-                    placeholderIconColor="#007aff"
+                  <Picker
+                        // label="Countries"
+                        style={{ height: 100, width: 300 }}
+                        minWidth="100%"
+                        placeholder="Select your Category"
+                        selectedValue={country}
+                        onValueChange={(itemValue, itemIndex) =>
+                            setCountry(itemValue)
+                          }>
+                       
+                        {countries.map((c, index) => {
+                            return (
+                                <Picker.Item
+                                    key={c.code}
+                                    label={c.name}
+                                    value={c.code} />
+                            )
+                        })}
 
-                /> 
+                    </Picker>
                
 
                 <View style={{ width: '80%', alignItems: "center" }}>
