@@ -32,7 +32,7 @@ const Orders = (props) => {
             <FlatList
                 data={orderList}
                 renderItem={({ item }) => (
-                    <OrderCard item={item} />
+                    <OrderCard item={item} update={true} />
                 )
                 }
                 keyExtractor={(item) => item.id}

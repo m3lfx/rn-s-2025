@@ -17,7 +17,7 @@ const codes = [
   { name: "shipped", code: "2" },
   { name: "delivered", code: "1" },
 ];
-const OrderCard = ({ item, }) => {
+const OrderCard = ({ item, update }) => {
   console.log(item)
   const [orderStatus, setOrderStatus] = useState('');
   const [statusText, setStatusText] = useState('');
@@ -119,7 +119,7 @@ const OrderCard = ({ item, }) => {
           <Text style={styles.price}>$ {item.totalPrice}</Text>
         </View>
         {/* {item.editMode ? ( */}
-        <View>
+        { update ? <View>
           <>
             <Picker
               width="80%"
@@ -149,10 +149,8 @@ const OrderCard = ({ item, }) => {
               <Text style={{ color: "white" }}>Update</Text>
             </EasyButton>
           </>
-
-
-
-        </View>
+        </View> : null }
+        
        
       </View>
     </View>
