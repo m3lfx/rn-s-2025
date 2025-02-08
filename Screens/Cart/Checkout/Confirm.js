@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, StyleSheet, Dimensions, ScrollView, Button, Text } from "react-native";
 import { Surface, Avatar, Divider } from 'react-native-paper';
 
@@ -6,11 +6,14 @@ import { Surface, Avatar, Divider } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux'
 import AsyncStorage from "@react-native-async-storage/async-storage"
-
-
+import axios from 'axios';
+import baseURL from '../../../assets/common/baseurl';
+import AuthGlobal from '../../../Context/Store/AuthGlobal';
 var { width, height } = Dimensions.get("window");
-
+import Toast from 'react-native-toast-message';
+import { clearCart } from '../../../Redux/Actions/cartActions';
 const Confirm = (props) => {
+    const context = useContext(AuthGlobal)
     const [token, setToken] = useState();
     // const confirm = props.route.params;
     const finalOrder = props.route.params;
@@ -24,6 +27,7 @@ const Confirm = (props) => {
         AsyncStorage.getItem("jwt")
             .then((res) => {
                 setToken(res)
+                
             })
             .catch((error) => console.log(error))
         const config = {
@@ -34,22 +38,19 @@ const Confirm = (props) => {
         axios
             .post(`${baseURL}orders`, order, config)
             .then((res) => {
-                if (res.status == 200 || res.status == 201) {
+                console.log(res.status)
                     Toast.show({
                         topOffset: 60,
                         type: "success",
                         text1: "Order Completed",
                         text2: "",
                     });
-                    // dispatch(actions.clearCart())
-                    // props.navigation.navigate("Cart")
-
                     setTimeout(() => {
                         dispatch(clearCart())
-                        navigation.navigate("Cart");
+                        navigation.navigate('Cart Screen', {screen: 'Cart'})
                     }, 500);
                 }
-            })
+            )
             .catch((error) => {
                 Toast.show({
                     topOffset: 60,
@@ -60,7 +61,7 @@ const Confirm = (props) => {
             });
     }
 
-    
+
     return (
         <Surface>
             <ScrollView contentContainerStyle={styles.container}>
@@ -80,24 +81,24 @@ const Confirm = (props) => {
 
                             {finalOrder.order.order.orderItems.map((item) => {
                                 return (
-                                  <Surface pl="4" pr="5" py="2" bg="white" keyExtractor={item => item.id}>
+                                    <Surface  bg="white" key={item.id}>
 
-                                  <Avatar.Image size={48} source={{
-                                      uri: item.image ?
-                                          item.image : 'https://cdn.pixabay.com/photo/2012/04/01/17/29/box-23649_960_720.png'
-                                  }} />
-                  
-                                  <Text>
-                                      {item.name}
-                                  </Text>
-                  
-                                  <Divider />
-                                  <Text fontSize="xs" color="coolGray.800" alignSelf="flex-start">
-                                      $ {item.price}
-                                  </Text>
-                  
-                  
-                              </Surface>
+                                        <Avatar.Image size={48} source={{
+                                            uri: item.image ?
+                                                item.image : 'https://cdn.pixabay.com/photo/2012/04/01/17/29/box-23649_960_720.png'
+                                        }} />
+
+                                        <Text>
+                                            {item.name}
+                                        </Text>
+
+                                        <Divider />
+                                        <Text fontSize="xs" color="coolGray.800" alignSelf="flex-start">
+                                            $ {item.price}
+                                        </Text>
+
+
+                                    </Surface>
                                 )
                             })}
                         </View>
@@ -117,6 +118,7 @@ const Confirm = (props) => {
 const styles = StyleSheet.create({
     container: {
         height: height,
+       
         padding: 8,
         alignContent: "center",
         backgroundColor: "white",
@@ -137,11 +139,13 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         justifyContent: "center",
         width: width / 1.2,
+        
     },
     body: {
         margin: 10,
         alignItems: "center",
         flexDirection: "row",
+        width: "90%",
     },
 });
 export default Confirm;

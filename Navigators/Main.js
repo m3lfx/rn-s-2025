@@ -38,7 +38,7 @@ const Main = () => {
             />
 
             <Tab.Screen
-                name="Cart"
+                name="Cart Screen"
                 component={CartNavigator}
                 options={{
                     tabBarIcon: ({ color }) => {

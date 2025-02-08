@@ -121,7 +121,7 @@ const Products = (props) => {
                 <EasyButton
                     secondary
                     medium
-                    // onPress={() => navigation.navigate("Orders")}
+                    onPress={() => navigation.navigate("Orders")}
                 >
                     <Icon name="shopping-bag" size={18} color="white" />
                     <Text style={styles.buttonText}>Orders</Text>

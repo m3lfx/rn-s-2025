@@ -10,13 +10,12 @@ import baseURL from "../../assets/common/baseurl"
 
 import AuthGlobal from "../../Context/Store/AuthGlobal"
 import { logoutUser } from "../../Context/Actions/Auth.actions"
-// import OrderCard from '../../Shared/OrderCard';
 
 
 const UserProfile = (props) => {
     const context = useContext(AuthGlobal)
     const [userProfile, setUserProfile] = useState('')
-    // const [orders, setOrders] = useState([])
+    const [orders, setOrders] = useState([])
     const navigation = useNavigation()
 
     useFocusEffect(
@@ -37,20 +36,6 @@ const UserProfile = (props) => {
                         .then((user) => setUserProfile(user.data))
                 })
                 .catch((error) => console.log(error))
-            // axios
-            //     .get(`${baseURL}orders`)
-            //     .then((x) => {
-            //         const data = x.data;
-            //         console.log(data)
-            //         // const userOrders = data.filter(
-            //         //     (order) =>
-            //         //         // console.log(order)
-            //         //         order.user ? (order.user._id === context.stateUser.user.userId) : false
-
-            //         // );
-            //         // setOrders(userOrders);
-            //     })
-            //     .catch((error) => console.log(error))
             return () => {
                 setUserProfile();
             }
@@ -76,20 +61,6 @@ const UserProfile = (props) => {
                         AsyncStorage.removeItem("jwt"),
                         logoutUser(context.dispatch)
                     ]} />
-                    {/* <View style={styles.order}>
-                        <Text style={{ fontSize: 20 }}>My Orders</Text>
-                        <View>
-                            {orders ? (
-                                orders.map((order) => {
-                                    return <OrderCard key={order.id} item={order} select="false" />;
-                                })
-                            ) : (
-                                <View style={styles.order}>
-                                    <Text>You have no orders</Text>
-                                </View>
-                            )}
-                        </View>
-                    </View> */}
                 </View>
 
             </ScrollView>
